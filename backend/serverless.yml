@@ -1,0 +1,29 @@
+service: ai-dev-assistant
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-west-2
+  timeout: 30
+  environment:
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+
+functions:
+  api:
+    handler: app.main.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /summarize-pr
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true  # builds packages in Linux-compatible environment
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!github-action/**'
